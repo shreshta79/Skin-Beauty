@@ -240,26 +240,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     <script>
-        // Create snowflakes
-        function createSnowflake() {
-            const snowflake = document.createElement('div');
-            snowflake.classList.add('snowflake');
-            snowflake.innerHTML = '❄';
-            snowflake.style.left = Math.random() * 100 + '%';
-            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
-            snowflake.style.opacity = Math.random();
-            snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
-            
-            document.body.appendChild(snowflake);
-            
-            setTimeout(() => {
-                snowflake.remove();
-            }, 5000);
-        }
+document.addEventListener('DOMContentLoaded', function () {
+  // adjust selector to match your contact form
+  var form = document.querySelector('form#contactForm') || document.querySelector('form[data-form="contact"]') || document.querySelector('form');
 
-        // Create snowflakes periodically
-        setInterval(createSnowflake, 300);
-    </script>
+  if (!form) return;
+
+  form.addEventListener('submit', function (e) {
+    // optional: capture the submitter (the button that was clicked)
+    var submitterText = '';
+    try {
+      // modern browsers set e.submitter to the clicked button
+      if (e.submitter && e.submitter.innerText) submitterText = e.submitter.innerText.trim();
+    } catch (err) { /* ignore */ }
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: 'customFormSubmit',
+      formId: form.id || '',
+      formName: form.getAttribute('name') || '',
+      submitButtonText: submitterText
+    });
+
+    // don't prevent normal submission — allow form to proceed
+  }, false);
+});
+</script>
+
 </body>
    
 </html>
